@@ -60,32 +60,25 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
     const { profileImage, ...profileWithoutImage } = profileData;
     const imageUrl = profileImage ? URL.createObjectURL(profileImage) : "";
 
-    let accounts: any[] = [];
+    const reader = new FileReader();
 
-    const storedAccounts = localStorage.getItem("userProfiles");
-    if (storedAccounts) {
-      accounts = JSON.parse(storedAccounts);
-    }
-
-    accounts.push({
-      ...profileWithoutImage,
-      profileImage: imageUrl,
-    });
-
-    localStorage.setItem("userProfiles", JSON.stringify(accounts));
-
-    console.log("imageUrl1", imageUrl);
+    reader.onload = (event) => {
+      localStorage.setItem(
+        profileWithoutImage.username,
+        JSON.stringify({
+          profileImage: event.target.result,
+          ...profileWithoutImage,
+        })
+      );
+    };
     if (profileImage) {
-      URL.revokeObjectURL(imageUrl);
+      reader.readAsDataURL(profileImage);
+    } else {
+      localStorage.setItem(
+        profileWithoutImage.username,
+        JSON.stringify(profileWithoutImage)
+      );
     }
-    console.log("imageUrl2", imageUrl);
-
-    dispatch(
-      addAccount({
-        ...profileWithoutImage,
-        profileImage: imageUrl,
-      })
-    );
 
     handleClose();
   };

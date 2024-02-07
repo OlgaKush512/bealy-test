@@ -1,21 +1,74 @@
-import { Container, Grid, Paper } from "@mui/material";
-import PhotoProfile from "./PhotoProfile";
+import {
+  Avatar,
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProfilePage = () => {
+  const { username } = useParams();
+
+  const profileImage = useSelector((state) => {
+    const userProfiles = state.accounts.accounts;
+    const userProfile = userProfiles.find(
+      (profile) => profile.username === username
+    );
+
+    return userProfile ? userProfile.profileImage : null;
+  });
+  const description = useSelector((state) => {
+    const userProfiles = state.accounts.accounts;
+    const userProfile = userProfiles.find(
+      (profile) => profile.username === username
+    );
+
+    return userProfile ? userProfile.description : "";
+  });
+
   return (
     <>
       <Container>
         <Paper
           elevation={1}
           sx={{
-            minHeight: { xs: "40vh", md: "90vh" },
+            minHeight: { xs: "40vh", md: "50vh" },
             borderRadius: "16px",
           }}
         >
-          <Grid container columns={10} mt={10}>
-            <PhotoProfile />
-            {/* <Grid item xs={0} md={1} /> */}
-            {/* <InfoProfile /> */}
+          <Grid container>
+            <Grid item xs={5}>
+              <Box
+                sx={{
+                  minHeight: { xs: "40vh", md: "50vh" },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  sx={{
+                    width: { xs: "80%", md: "80%" },
+                    height: { xs: "80%", md: "80%" },
+                  }}
+                  src={profileImage}
+                />
+              </Box>
+            </Grid>
+            <Stack>
+              <Stack direction="row">
+                <Typography>username:</Typography>
+                <Typography>{username}</Typography>
+              </Stack>
+              <Stack direction="row">
+                <Typography>description:</Typography>
+                <Typography>{description}</Typography>
+              </Stack>
+            </Stack>
           </Grid>
         </Paper>
       </Container>
