@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Container,
@@ -9,29 +8,28 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../slices/authSlice";
+import { Account } from "../LoginForm/LoginForm";
 
 const ProfilePage = () => {
   const { username } = useParams();
   const navigate = useNavigate();
-  const profileImage = useSelector((state) => {
-    const userProfiles = state.accounts.accounts;
-    const userProfile = userProfiles.find(
-      (profile) => profile.username === username
-    );
+  const dispatch = useDispatch();
 
-    return userProfile ? userProfile.profileImage : null;
-  });
-  const description = useSelector((state) => {
-    const userProfiles = state.accounts.accounts;
-    const userProfile = userProfiles.find(
-      (profile) => profile.username === username
-    );
+  const userProfilesString = localStorage.getItem("userProfiles");
+  const userProfiles = userProfilesString
+    ? JSON.parse(userProfilesString)
+    : null;
 
-    return userProfile ? userProfile.description : "";
-  });
+  const userProfile = userProfiles?.find(
+    (profile: Account) => profile.username === username
+  );
+  const profileImage = userProfile ? userProfile.profileImage : null;
+  const description = userProfile ? userProfile.description : "";
 
   const handleChat = () => {
+    dispatch(setCurrentUser(username));
     navigate(`/chat`);
   };
 
@@ -50,7 +48,7 @@ const ProfilePage = () => {
               <Box
                 sx={{
                   minHeight: { xs: "40vh", md: "50vh" },
-                  paddingX: 1,
+                  paddingX: 3,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -78,11 +76,11 @@ const ProfilePage = () => {
               }}
             >
               <Stack>
-                <Stack direction="row">
+                <Stack direction="row" spacing={2}>
                   <Typography>username:</Typography>
                   <Typography>{username}</Typography>
                 </Stack>
-                <Stack direction="row">
+                <Stack direction="row" spacing={2}>
                   <Typography>description:</Typography>
                   <Typography>{description}</Typography>
                 </Stack>

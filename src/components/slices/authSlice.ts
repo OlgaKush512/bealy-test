@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Account } from "../LoginForm/LoginForm";
 
-const initialState = {
+interface InitialState {
+  accounts: Account[];
+  currentUser: string;
+}
+
+const initialState: InitialState = {
   accounts: [],
+  currentUser: "",
 };
 
 export const authSlice = createSlice({
@@ -17,8 +24,12 @@ export const authSlice = createSlice({
         state.accounts = JSON.parse(storedAccounts);
       }
     },
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
   },
 });
 
-export const { addAccount, loadAccountsFromLocalStorage } = authSlice.actions;
+export const { addAccount, loadAccountsFromLocalStorage, setCurrentUser } =
+  authSlice.actions;
 export default authSlice.reducer;

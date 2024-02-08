@@ -65,16 +65,18 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
     if (profileImage) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const imageUrl = event.target.result as string;
-        const accounts: Account[] = JSON.parse(
-          localStorage.getItem("userProfiles") || "[]"
-        );
-        accounts.push({
-          ...profileWithoutImage,
-          profileImage: imageUrl,
-        });
-        localStorage.setItem("userProfiles", JSON.stringify(accounts));
-        handleClose();
+        if (event.target) {
+          const imageUrl = event.target.result;
+          const accounts: Account[] = JSON.parse(
+            localStorage.getItem("userProfiles") || "[]"
+          );
+          accounts.push({
+            ...profileWithoutImage,
+            profileImage: imageUrl,
+          });
+          localStorage.setItem("userProfiles", JSON.stringify(accounts));
+          handleClose();
+        }
       };
       reader.readAsDataURL(profileImage);
     } else {
@@ -83,7 +85,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
       );
       accounts.push({
         ...profileWithoutImage,
-        profileImage: "",
+        profileImage: null,
       });
       localStorage.setItem("userProfiles", JSON.stringify(accounts));
       handleClose();

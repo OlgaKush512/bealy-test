@@ -8,6 +8,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { combineReducers } from "@reduxjs/toolkit";
+
+const rootReducer = combineReducers({});
+
+export type IRootState = ReturnType<typeof rootReducer>;
 
 interface Message {
   username: string;
@@ -16,15 +23,19 @@ interface Message {
 }
 
 const ChatComponent: React.FC = () => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const currentUser = useSelector(
+    (state: IRootState) => state.accounts.currentUser
+  );
+
   useEffect(() => {
     const session = OT.initSession(
-      "47856981",
-      "2_MX40Nzg1Njk4MX5-MTcwNzMxOTA2NzkyNH4rMlAvWmtnSnFXUjY0czYrUElpZitEMnZ-fn4"
+      import.meta.env.VITE_API_KEY,
+      import.meta.env.VITE_SESSION_ID
     );
-
     session.connect(import.meta.env.VITE_TOKEN, function (error) {
       if (error) {
         console.log("Error connecting: ", error.name, error.message);
@@ -53,7 +64,7 @@ const ChatComponent: React.FC = () => {
 
   const messageHandler = () => {
     const newMessage: Message = {
-      username: "Username",
+      username: currentUser,
       text: message,
       timestamp: new Date(),
     };
@@ -66,14 +77,36 @@ const ChatComponent: React.FC = () => {
     );
   };
 
+  const handleLogin = (login: string) => {
+    navigate(`/profile/${login}`);
+  };
+
   return (
     <div>
-      <Paper sx={{ borderRadius: "16px" }}>
+      <Paper sx={{ borderRadius: "16px", height: "60vh" }}>
         <Box>
-          <Box sx={{ padding: 10 }}>
+          <Box
+            sx={{
+              padding: 10,
+              height: "60vh",
+              width: "50vw",
+              overflowY: "auto",
+              scrollbarWidth: "thin",
+              scrollbarColor: "transparent transparent #888888 transparent",
+              "&::-webkit-scrollbar": { width: "12px" },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#FFF",
+                borderRadius: "6px",
+              },
+            }}
+          >
             {messages.map((messageContent, index: number) => {
               return (
-                <Paper key={index} sx={{ marginY: 2 }}>
+                <Paper
+                  key={index}
+                  sx={{ marginY: 2 }}
+                  onClick={() => handleLogin(messageContent.username)}
+                >
                   <Typography>{messageContent.username}</Typography>
                   <Typography>{messageContent.text}</Typography>
                   <Typography>
@@ -85,7 +118,14 @@ const ChatComponent: React.FC = () => {
           </Box>
           <Stack
             direction="row"
-            sx={{ display: "flex", justifyContent: "center" }}
+            sx={{
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              mx: 3,
+              p: 3,
+            }}
           >
             <TextField
               required
@@ -97,6 +137,7 @@ const ChatComponent: React.FC = () => {
               multiline
               value={message}
               onChange={handleInputChange}
+              sx={{ width: "calc(100% - 80px)" }}
             />
             <Button onClick={messageHandler}>Send</Button>
           </Stack>
