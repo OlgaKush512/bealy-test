@@ -8,22 +8,20 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { addAccount } from "../slices/authSlice";
-import { useDispatch } from "react-redux";
 
 export interface Account {
   profileImage: File | null;
   username: string;
   description: string;
+  messageHistory: string[];
 }
 
 const LoginForm = ({ onClose }: { onClose: () => void }) => {
-  const dispatch = useDispatch();
-
   const [profileData, setProfileData] = useState<Account>({
     profileImage: null,
     username: "",
     description: "",
+    messageHistory: [],
   });
 
   const [open] = useState<boolean>(true);
@@ -45,7 +43,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
     if (file) {
       setProfileData((prevProfileData) => ({
         ...prevProfileData,
-        profileImage: file,
+        profileImage: file || null,
       }));
     } else {
       setProfileData((prevProfileData) => ({
@@ -58,29 +56,33 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const { profileImage, ...profileWithoutImage } = profileData;
-    const imageUrl = profileImage ? URL.createObjectURL(profileImage) : "";
 
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      localStorage.setItem(
-        profileWithoutImage.username,
-        JSON.stringify({
-          profileImage: event.target.result,
-          ...profileWithoutImage,
-        })
-      );
-    };
     if (profileImage) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageUrl = event.target.result as string;
+        const accounts: Account[] = JSON.parse(
+          localStorage.getItem("userProfiles") || "[]"
+        );
+        accounts.push({
+          ...profileWithoutImage,
+          profileImage: imageUrl,
+        });
+        localStorage.setItem("userProfiles", JSON.stringify(accounts));
+        handleClose();
+      };
       reader.readAsDataURL(profileImage);
     } else {
-      localStorage.setItem(
-        profileWithoutImage.username,
-        JSON.stringify(profileWithoutImage)
+      const accounts: Account[] = JSON.parse(
+        localStorage.getItem("userProfiles") || "[]"
       );
+      accounts.push({
+        ...profileWithoutImage,
+        profileImage: "",
+      });
+      localStorage.setItem("userProfiles", JSON.stringify(accounts));
+      handleClose();
     }
-
-    handleClose();
   };
 
   return (
@@ -91,13 +93,13 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
           <Stack spacing={2}>
             <input
               accept="image/*"
-              id="profilePic"
-              name="profilePic"
+              id="profileImage"
+              name="profileImage"
               type="file"
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
-            <label htmlFor="profilePic">
+            <label htmlFor="profileImage">
               <Button variant="contained" component="span">
                 Upload Profile Picture
               </Button>

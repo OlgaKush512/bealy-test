@@ -13,14 +13,18 @@ const LoginPage = () => {
 
   const handleLogin = () => {
     setError("");
-    const account = localStorage.getItem(login);
-    if (account) {
-      const info = JSON.parse(account);
-
-      dispatch(addAccount({ username: login, ...info }));
-      navigate(`/profile/${login}`);
-    } else {
-      setError("Login not found");
+    const storedAccounts = localStorage.getItem("userProfiles");
+    if (storedAccounts) {
+      const accounts = JSON.parse(storedAccounts);
+      const foundAccount = accounts.find(
+        (account: Account) => account.username === login
+      );
+      if (foundAccount) {
+        dispatch(addAccount(foundAccount));
+        navigate(`/profile/${login}`);
+      } else {
+        setError("Login not found");
+      }
     }
   };
 

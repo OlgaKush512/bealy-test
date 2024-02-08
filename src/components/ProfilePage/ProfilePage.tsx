@@ -1,18 +1,19 @@
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   Paper,
   Stack,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const ProfilePage = () => {
   const { username } = useParams();
-
+  const navigate = useNavigate();
   const profileImage = useSelector((state) => {
     const userProfiles = state.accounts.accounts;
     const userProfile = userProfiles.find(
@@ -29,6 +30,10 @@ const ProfilePage = () => {
 
     return userProfile ? userProfile.description : "";
   });
+
+  const handleChat = () => {
+    navigate(`/chat`);
+  };
 
   return (
     <>
@@ -68,6 +73,7 @@ const ProfilePage = () => {
                 <Typography>description:</Typography>
                 <Typography>{description}</Typography>
               </Stack>
+              <Button onClick={handleChat}>Let's Chat</Button>
             </Stack>
           </Grid>
         </Paper>
