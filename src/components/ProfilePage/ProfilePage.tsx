@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../slices/authSlice";
 import { Account } from "../LoginForm/LoginForm";
+import MainLayout from "../Layouts/MainLayout";
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -35,6 +36,7 @@ const ProfilePage = () => {
 
   return (
     <>
+      <MainLayout />
       <Container>
         <Paper
           elevation={1}
@@ -75,16 +77,18 @@ const ProfilePage = () => {
                 alignItems: "center",
               }}
             >
-              <Stack>
+              <Stack spacing={2}>
                 <Stack direction="row" spacing={2}>
-                  <Typography>username:</Typography>
+                  <Typography variant="button">username:</Typography>
                   <Typography>{username}</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  <Typography>description:</Typography>
+                  <Typography variant="button">description:</Typography>
                   <Typography>{description}</Typography>
                 </Stack>
-                <Button onClick={handleChat}>Let's Chat</Button>
+                <Button variant="contained" onClick={handleChat}>
+                  Let's Chat
+                </Button>
               </Stack>
             </Grid>
           </Grid>

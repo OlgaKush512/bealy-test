@@ -3,6 +3,7 @@ import OT from "@opentok/client";
 import {
   Box,
   Button,
+  Container,
   Paper,
   Stack,
   TextField,
@@ -11,6 +12,7 @@ import {
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { combineReducers } from "@reduxjs/toolkit";
+import MainLayout from "../Layouts/MainLayout";
 
 const rootReducer = combineReducers({});
 
@@ -69,7 +71,14 @@ const ChatComponent: React.FC = () => {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prevMessages) => {
+      const updatedMessages = [...prevMessages, newMessage];
+      localStorage.setItem(
+        `chatMessages_${localStorage.getItem("currentUser")}`,
+        JSON.stringify(updatedMessages)
+      );
+      return updatedMessages;
+    });
     setMessage("");
     localStorage.setItem(
       `chatMessages_${localStorage.getItem("currentUser")}`,
@@ -82,68 +91,90 @@ const ChatComponent: React.FC = () => {
   };
 
   return (
-    <div>
-      <Paper sx={{ borderRadius: "16px", height: "60vh" }}>
-        <Box>
-          <Box
-            sx={{
-              padding: 10,
-              height: "60vh",
-              width: "50vw",
-              overflowY: "auto",
-              scrollbarWidth: "thin",
-              scrollbarColor: "transparent transparent #888888 transparent",
-              "&::-webkit-scrollbar": { width: "12px" },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#FFF",
-                borderRadius: "6px",
-              },
-            }}
-          >
-            {messages.map((messageContent, index: number) => {
-              return (
-                <Paper
-                  key={index}
-                  sx={{ marginY: 2 }}
-                  onClick={() => handleLogin(messageContent.username)}
-                >
-                  <Typography>{messageContent.username}</Typography>
-                  <Typography>{messageContent.text}</Typography>
-                  <Typography>
-                    {messageContent.timestamp.toLocaleString()}
-                  </Typography>
-                </Paper>
-              );
-            })}
+    <>
+      <MainLayout />
+      <Container>
+        <Paper sx={{ borderRadius: "16px", height: "60vh" }}>
+          <Box>
+            <Box
+              sx={{
+                padding: 10,
+                height: "60vh",
+                width: "50vw",
+                overflowY: "auto",
+                scrollbarWidth: "thin",
+                scrollbarColor: "transparent transparent #888888 transparent",
+                "&::-webkit-scrollbar": { width: "12px" },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#FFF",
+                  borderRadius: "6px",
+                },
+              }}
+            >
+              {messages.map((messageContent, index: number) => {
+                return (
+                  <Paper
+                    key={index}
+                    sx={{ marginY: 2 }}
+                    onClick={() => handleLogin(messageContent.username)}
+                  >
+                    <Typography variant="subtitle2" textAlign="left" ml={2}>
+                      {messageContent.username}
+                    </Typography>
+                    <Typography textAlign="right" mr={4}>
+                      {messageContent.text}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      textAlign="left"
+                      fontSize={10}
+                    >
+                      {new Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      }).format(new Date(messageContent.timestamp))}
+                    </Typography>
+                  </Paper>
+                );
+              })}
+            </Box>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                justifyContent: "center",
+                mx: 3,
+                p: 3,
+              }}
+            >
+              <TextField
+                required
+                autoFocus
+                variant="outlined"
+                margin="dense"
+                id="chat"
+                name="chat"
+                multiline
+                value={message}
+                onChange={handleInputChange}
+                sx={{ width: "50vw" }}
+              />
+              <Button variant="contained" onClick={messageHandler}>
+                Send
+              </Button>
+            </Stack>
           </Box>
-          <Stack
-            direction="row"
-            sx={{
-              position: "fixed",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              mx: 3,
-              p: 3,
-            }}
-          >
-            <TextField
-              required
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="chat"
-              name="chat"
-              multiline
-              value={message}
-              onChange={handleInputChange}
-              sx={{ width: "calc(100% - 80px)" }}
-            />
-            <Button onClick={messageHandler}>Send</Button>
-          </Stack>
-        </Box>
-      </Paper>
-    </div>
+        </Paper>
+      </Container>
+    </>
   );
 };
 

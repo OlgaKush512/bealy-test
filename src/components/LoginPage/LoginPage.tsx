@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addAccount } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { Account } from "../LoginForm/LoginForm";
+import MainLayout from "../Layouts/MainLayout";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const LoginPage = () => {
 
   return (
     <div>
-      <Typography variant="h4">Login Page</Typography>
+      <MainLayout />
       <TextField
         autoComplete="off"
         label="Enter your login"

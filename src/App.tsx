@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
 import LandingPage from "./components/LandingPage/LandingPage";
-import { theme, darkTheme } from "./theme";
+import { theme } from "./theme";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./components/LoginPage/LoginPage";
 import ProfilePage from "./components/ProfilePage/ProfilePage";

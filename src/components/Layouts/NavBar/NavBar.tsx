@@ -3,8 +3,14 @@ import Logo from "./Logo";
 import { AppBar, Stack } from "@mui/material/index";
 import { useState } from "react";
 import LoginForm from "../../LoginForm/LoginForm";
+import { useLocation, useParams } from "react-router-dom";
 
 const NavBar = () => {
+  const { username } = useParams();
+  const location = useLocation();
+
+  console.log("location.pathname", location.pathname);
+
   const [openRegistration, setOpenRegistration] = useState<boolean>(false);
 
   const handleLoginFormOpen = () => {
@@ -25,12 +31,18 @@ const NavBar = () => {
           spacing={2}
           sx={{ display: "flex", alignItems: "center" }}
         >
-          <>
-            <MyButton variant="contained" onClick={handleLoginFormOpen}>
-              Sign Up
-            </MyButton>
-            {openRegistration && <LoginForm onClose={handleLoginFormClose} />}
-          </>
+          {username ||
+          location.pathname === "/login" ||
+          location.pathname === "/chat" ? (
+            <></>
+          ) : (
+            <>
+              <MyButton variant="contained" onClick={handleLoginFormOpen}>
+                Sign Up
+              </MyButton>
+              {openRegistration && <LoginForm onClose={handleLoginFormClose} />}
+            </>
+          )}
         </Stack>
       </StyledToolBar>
     </AppBar>
