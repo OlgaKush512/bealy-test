@@ -50,31 +50,45 @@ const ProfilePage = () => {
               <Box
                 sx={{
                   minHeight: { xs: "40vh", md: "50vh" },
+                  paddingX: 1,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <Avatar
-                  sx={{
-                    width: { xs: "80%", md: "80%" },
-                    height: { xs: "80%", md: "80%" },
-                  }}
+                <img
                   src={profileImage}
+                  alt="Profile"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "16px",
+                  }}
                 />
               </Box>
             </Grid>
-            <Stack>
-              <Stack direction="row">
-                <Typography>username:</Typography>
-                <Typography>{username}</Typography>
+            <Grid item xs={1} />
+            <Grid
+              item
+              xs={5}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Stack>
+                <Stack direction="row">
+                  <Typography>username:</Typography>
+                  <Typography>{username}</Typography>
+                </Stack>
+                <Stack direction="row">
+                  <Typography>description:</Typography>
+                  <Typography>{description}</Typography>
+                </Stack>
+                <Button onClick={handleChat}>Let's Chat</Button>
               </Stack>
-              <Stack direction="row">
-                <Typography>description:</Typography>
-                <Typography>{description}</Typography>
-              </Stack>
-              <Button onClick={handleChat}>Let's Chat</Button>
-            </Stack>
+            </Grid>
           </Grid>
         </Paper>
       </Container>

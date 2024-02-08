@@ -41,6 +41,11 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 500 * 1024) {
+        alert("Please select an image smaller than 500 KB.");
+        e.target.value = "";
+        return;
+      }
       setProfileData((prevProfileData) => ({
         ...prevProfileData,
         profileImage: file || null,
